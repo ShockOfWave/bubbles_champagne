@@ -168,3 +168,5 @@ data/
 
 # Analyzed videos folder
 analyzed_videos/
+
+.DS_Store
