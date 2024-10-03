@@ -63,7 +63,7 @@ pip install -r requirements.txt
 
 ```
 python main.py --root_dir /path/to/data \
-               --checkpoints /path/to/checkpoints 
+               --checkpoints /path/to/checkpoints с
 ```
 
 Параметры:
@@ -79,5 +79,3 @@ python main.py --root_dir /path/to/data \
 License
 
 Этот проект лицензирован под MIT License.
-
-Этот файл README.md включает информацию о структуре проекта, установке, использовании, а также общие проблемы, с которыми вы можете столкнуться при работе с проектом.
