@@ -63,7 +63,7 @@ pip install -r requirements.txt
 
 ```
 python main.py --root_dir /path/to/data \
-               --checkpoints /path/to/checkpoints \
+               --checkpoints /path/to/checkpoints 
 ```
 
 Параметры:
