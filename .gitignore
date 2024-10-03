@@ -165,3 +165,6 @@ root_dir/
 output_dir/
 images/
 data/
+
+# Analyzed videos folder
+analyzed_videos/

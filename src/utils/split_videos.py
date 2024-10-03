@@ -8,7 +8,7 @@ def create_dir_if_not_exists(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-def split_videos(root_dir, output_dir, train_split=0.7, val_split=0.15, test_split=0.15):
+def split_videos(root_dir, output_dir, train_split=0.6, val_split=0.3, test_split=0.1):
     for class_name in os.listdir(root_dir):
         class_dir = os.path.join(root_dir, class_name)
 
@@ -23,7 +23,7 @@ def split_videos(root_dir, output_dir, train_split=0.7, val_split=0.15, test_spl
             val_videos = videos[train_size:train_size + val_size]
             test_videos = videos[train_size + val_size:]
 
-            for split, video_list in zip(['train', 'val', 'test'], [train_videos, val_videos, test_videos]):
+            for split, video_list in zip(['train', 'test', 'val'], [train_videos, val_videos, test_videos]):
                 split_class_dir = os.path.join(output_dir, split, class_name)
                 create_dir_if_not_exists(split_class_dir)
 
@@ -36,13 +36,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Split videos into train, val, and test sets.")
     parser.add_argument('--root_dir', type=str, required=True, help="Path to the root directory containing video classes.")
     parser.add_argument('--output_dir', type=str, default='output', help="Path to the directory where split videos will be saved.")
-    parser.add_argument('--train_split', type=float, default=0.7, help="Proportion of videos to use for training.")
-    parser.add_argument('--val_split', type=float, default=0.15, help="Proportion of videos to use for validation.")
-    parser.add_argument('--test_split', type=float, default=0.15, help="Proportion of videos to use for testing.")
+    parser.add_argument('--train_split', type=float, default=0.6, help="Proportion of videos to use for training.")
+    parser.add_argument('--val_split', type=float, default=0.3, help="Proportion of videos to use for validation.")
+    parser.add_argument('--test_split', type=float, default=0.1, help="Proportion of videos to use for testing.")
     
     args = parser.parse_args()
-
-    if args.train_split + args.val_split + args.test_split != 1.0:
-        raise ValueError("The sum of train_split, val_split, and test_split must be 1.0")
 
     split_videos(args.root_dir, args.output_dir, args.train_split, args.val_split, args.test_split)
