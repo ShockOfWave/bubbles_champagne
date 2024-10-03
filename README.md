@@ -13,7 +13,7 @@ Features
 	•	Возможность предобучения модели с дальнейшим обучением для более точной классификации.
 
 Project Structure
-
+```
 project_root/
 ├── src/
 │   ├── __init__.py                # Инициализация пакета
@@ -30,13 +30,14 @@ project_root/
 ├── main.py                        # Точка входа для обучения модели
 ├── requirements.txt               # Зависимости проекта
 └── README.md                      # Этот файл
+```
 
 ## Installation
 
 1. Клонирование репозитория
 
 ```
-git clone hhttps://github.com/ShockOfWave/bubbles_champagne.git
+git clone https://github.com/ShockOfWave/bubbles_champagne.git
 cd bubbles_champagne
 ```
 
@@ -45,6 +46,8 @@ cd bubbles_champagne
 Перед тем, как начать, убедитесь, что у вас установлены все необходимые зависимости. Для этого выполните:
 
 ```
+python -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
