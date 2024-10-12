@@ -3,11 +3,7 @@ from glob import glob
 from ultralytics import YOLO
 import cv2
 
-# Путь к корню проекта
-PROJECT_ROOT = "project_root"
-MODEL_PATH = "path/to/your/yolov8-seg-model.pt"
-
-# Инициализация модели
+MODEL_PATH = "segmentation_model.pt"
 model = YOLO(MODEL_PATH)
 
 def process_images_in_directory(directory_path):
@@ -42,12 +38,12 @@ def process_image(image_path):
     # Если предсказаний нет, возвращаем False
     return False
 
-def process_project_directories():
+def process_project_directories(project_root):
     """
     Финальная функция для обработки директорий train, val и test.
     """
     for split in ['train', 'val', 'test']:
-        split_path = os.path.join(PROJECT_ROOT, split)
+        split_path = os.path.join(project_root, split)
         if os.path.exists(split_path):
             process_images_in_directory(split_path)
         else:
