@@ -170,3 +170,7 @@ data/
 analyzed_videos/
 
 .DS_Store
+
+checkpoints/
+data_split/
+frames/
