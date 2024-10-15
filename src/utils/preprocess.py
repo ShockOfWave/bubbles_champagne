@@ -3,7 +3,6 @@ import torch
 import numpy as np
 from tqdm import tqdm
 from transformers import CLIPProcessor, CLIPModel
-from sklearn.preprocessing import LabelEncoder
 import pickle
 
 # Определение устройства для вычислений
@@ -12,6 +11,35 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Загрузка модели CLIP и процессора для предобработки изображений
 model = CLIPModel.from_pretrained("openai/clip-vit-large-patch14").to(device)
 processor = CLIPProcessor.from_pretrained("openai/clip-vit-large-patch14")
+
+converter = {
+            "pink": 0,
+            "white": 1,
+            "plastic": 0,
+            "glass": 1,
+            "0": 0,
+            "10": 1,
+            "15": 2,
+            "20": 3,
+            "min": 0
+            }
+
+decode = {
+    0: {
+        0: "pink",
+        1: "white",
+    },
+    1: {
+        0: "plastic",
+        1: "glass",
+    },
+    2: {
+        0: "0",
+        1: "10",
+        2: "15",
+        3: "20",
+    }
+}
 
 def extract_embeddings(img_path):
     """
@@ -39,22 +67,17 @@ def extract_labels_from_path(path, label_index):
     # Возвращаем лейбл по указанному индексу
     return labels[label_index]
 
-def preprocess_data(paths, label_index, label_encoder=None, save_encoder=False, encoder_path=None):
+def preprocess_data(paths, task_number):
     """
     Предобработка изображений и создание эмбеддингов.
     Извлекает эмбеддинги для каждого изображения и лейбл по указанному индексу.
-    
-    Параметры:
-    - label_encoder: если передан обученный LabelEncoder, он будет использован для конвертации лейблов.
-    - save_encoder: если True, LabelEncoder будет сохранен в файл.
-    - encoder_path: путь для сохранения или загрузки LabelEncoder.
     """
+
+    label_index = task_number - 1
+
     X = []
     y = []
 
-    # Если энкодер не передан, инициализируем новый
-    if label_encoder is None:
-        label_encoder = LabelEncoder()
 
     for path in tqdm(paths, desc="Processing images"):
         # Извлечение эмбеддингов
@@ -65,22 +88,7 @@ def preprocess_data(paths, label_index, label_encoder=None, save_encoder=False, 
         label = extract_labels_from_path(path, label_index)
         y.append(label)
     
-    # Преобразуем строковые лейблы в числовой формат с помощью LabelEncoder
-    y = label_encoder.fit_transform(y)
+    # Преобразуем строковые лейблы в числовой формат
+    y = [converter[x] for x in y]
     
-    # Сохраняем энкодер, если указано
-    if save_encoder and encoder_path:
-        with open(encoder_path, 'wb') as f:
-            pickle.dump(label_encoder, f)
-        print(f"Label encoder saved to {encoder_path}")
-    
-    return np.array(X), np.array(y), label_encoder
-
-def load_label_encoder(encoder_path):
-    """
-    Загрузка LabelEncoder из файла.
-    """
-    with open(encoder_path, 'rb') as f:
-        label_encoder = pickle.load(f)
-    print(f"Label encoder loaded from {encoder_path}")
-    return label_encoder
+    return np.array(X), np.array(y)

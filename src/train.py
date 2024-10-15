@@ -1,29 +1,26 @@
 from src.model import VideoClassifier
-from src.utils.preprocess import preprocess_data, load_label_encoder
+from src.utils.preprocess import preprocess_data
 import os
 
-def train_and_evaluate(train_paths, val_paths, test_paths, output_dir, label_index, encoder_path=None, save_encoder=True, n_d=64, n_a=64, n_steps=5, gamma=1.5, lambda_sparse=1e-4, lr=2e-2, step_size=10, gamma_lr=0.9, batch_size=128, virtual_batch_size=256, patience=30, pretrain_ratio=0.8):
+def train_and_evaluate(train_paths, val_paths, test_paths, output_dir, task_number, n_d=64, n_a=64, n_steps=5, gamma=1.5, lambda_sparse=1e-4, lr=2e-2, step_size=10, gamma_lr=0.9, batch_size=128, virtual_batch_size=256, patience=30, pretrain_ratio=0.8):
     """
     Функция для обучения модели и оценки на тестовых данных.
     
     Параметры:
     - train_paths, val_paths, test_paths: списки путей к тренировочным, валидационным и тестовым данным.
     - label_index: индекс лейбла, который используется для обучения.
-    - encoder_path: путь для сохранения/загрузки LabelEncoder.
-    - save_encoder: если True, LabelEncoder сохраняется.
     - n_d, n_a, n_steps, gamma, lambda_sparse, lr, step_size, gamma_lr, batch_size, virtual_batch_size, patience: гиперпараметры модели.
     - pretrain_ratio: соотношение данных для предобучения.
     """
-
     # Предобработка данных и сохранение/обучение энкодера
     print("Preprocessing training data...")
-    X_train, y_train, label_encoder = preprocess_data(train_paths, label_index, save_encoder=save_encoder, encoder_path=encoder_path)
+    X_train, y_train = preprocess_data(train_paths, task_number)
 
     print("Preprocessing validation data...")
-    X_val, y_val, _ = preprocess_data(val_paths, label_index, label_encoder=label_encoder)
+    X_val, y_val = preprocess_data(val_paths, task_number)
 
     print("Preprocessing test data...")
-    X_test, y_test, _ = preprocess_data(test_paths, label_index, label_encoder=label_encoder)
+    X_test, y_test = preprocess_data(test_paths, task_number)
 
     # Создаем директорию для сохранения модели, если она не существует
     if not os.path.exists(output_dir):
@@ -56,7 +53,7 @@ def train_and_evaluate(train_paths, val_paths, test_paths, output_dir, label_ind
     accuracy = model.evaluate(X_test, y_test)
 
     # Сохранение модели
-    model_path = os.path.join(output_dir, f"trained_model_task{label_index}.pkl")
+    model_path = os.path.join(output_dir, f"trained_model_task{task_number}.pkl")
     model.save_model(model_path)
     print(f"Model saved to {model_path}")
     
