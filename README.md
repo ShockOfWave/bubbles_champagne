@@ -81,7 +81,7 @@ python main.py --root_dir /path/to/data \
 
 3. Инференс
 
-Для инференса данных используйте examples/inference.ipynb, чтобы загрузить сохраненную модель и провести классификацию на новых изображениях.
+Для инференса данных используйте [examples/inference.ipynb](https://github.com/ShockOfWave/bubbles_champagne/blob/main/examples/inference.ipynb), чтобы загрузить сохраненную модель и провести классификацию на новых изображениях.
 
 
 License
