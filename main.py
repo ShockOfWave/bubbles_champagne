@@ -34,18 +34,18 @@ def main():
 
 
     print("Training model for task (pink/white)...")
-    train_and_evaluate(train_paths, val_paths, test_paths, output_dir=args.checkpoints, label_index=0, 
+    train_and_evaluate(train_paths, val_paths, test_paths, output_dir=args.checkpoints, label_index=0, encoder_path="checkpoints/task_1_encoder.pkl",
                        n_d=64, n_a=64, n_steps=5, gamma=1.5, lambda_sparse=1e-4, lr=2e-2, 
                        step_size=10, gamma_lr=0.9, batch_size=128, virtual_batch_size=256, patience=30, pretrain_ratio=0.8)
 
     print("Training model for task (glass/plastic)...")
-    train_and_evaluate(train_paths, val_paths, test_paths, output_dir=args.checkpoints, label_index=1, 
+    train_and_evaluate(train_paths, val_paths, test_paths, output_dir=args.checkpoints, label_index=1, encoder_path="checkpoints/task_2_encoder.pkl",
                        n_d=64, n_a=64, n_steps=5, gamma=1.5, lambda_sparse=1e-4, lr=2e-2, 
                        step_size=10, gamma_lr=0.9, batch_size=128, virtual_batch_size=256, patience=30, pretrain_ratio=0.8)
 
     # Обучение для задачи 3 (time)
     print("Training model for task (time)...")
-    train_and_evaluate(train_paths, val_paths, test_paths, output_dir=args.checkpoints, label_index=2, 
+    train_and_evaluate(train_paths, val_paths, test_paths, output_dir=args.checkpoints, label_index=2, encoder_path="checkpoints/task_3_encoder.pkl",
                        n_d=64, n_a=64, n_steps=5, gamma=1.5, lambda_sparse=1e-4, lr=2e-2, 
                        step_size=20, gamma_lr=0.95, batch_size=128, virtual_batch_size=256, patience=100, pretrain_ratio=0.8)
 

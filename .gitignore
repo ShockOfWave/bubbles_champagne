@@ -171,6 +171,6 @@ analyzed_videos/
 
 .DS_Store
 
-checkpoints/
+# checkpoints/
 data_split/
 frames/
