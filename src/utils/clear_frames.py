@@ -1,6 +1,7 @@
 import os
 from glob import glob
 from ultralytics import YOLO
+from tqdm import tqdm
 import cv2
 
 MODEL_PATH = "segmentation_model.pt"
@@ -14,10 +15,9 @@ def process_images_in_directory(directory_path):
                   glob(os.path.join(directory_path, "**", "*.jpeg"), recursive=True) + \
                   glob(os.path.join(directory_path, "**", "*.png"), recursive=True)
     
-    for image_path in image_paths:
+    for image_path in tqdm(image_paths, desc="Deleting empty images"):
         if not process_image(image_path):
             os.remove(image_path)
-            print(f"Удалено изображение: {image_path}")
 
 def process_image(image_path):
     """
@@ -28,7 +28,7 @@ def process_image(image_path):
     image = cv2.imread(image_path)
     
     # Получение предсказаний от модели
-    results = model(image)
+    results = model.predict(image, conf=0.6, iou=0.6, verbose=False)
     
     # Проверка на наличие предсказаний
     for result in results:  # Обход всех результатов (для каждого изображения может быть несколько предсказаний)
