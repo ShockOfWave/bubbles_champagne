@@ -2,6 +2,9 @@ import torch
 from pytorch_tabnet.tab_model import TabNetClassifier
 from pytorch_tabnet.pretraining import TabNetPretrainer
 from sklearn.metrics import accuracy_score
+import pickle
+import zipfile
+import os
 
 class VideoClassifier:
     def __init__(self, n_d=64, n_a=64, n_steps=5, gamma=1.5, lambda_sparse=1e-4, lr=2e-2, step_size=10, gamma_lr=0.9, batch_size=128, virtual_batch_size=256, verbose=10):
@@ -26,6 +29,7 @@ class VideoClassifier:
         self.batch_size = batch_size
         self.virtual_batch_size = virtual_batch_size
         self.__pretrained = False
+        self.decode = None  # Словарь для декодирования меток для каждой задачи
 
     def pretrain(self, X_train, X_val, pretrain_ratio=0.8):
         self.pretrainer.fit(
@@ -61,8 +65,54 @@ class VideoClassifier:
         print(f"Test Accuracy: {acc:.4f}")
         return acc
 
-    def save_model(self, path):
-        self.model.save_model(path)
+    def save_model(self, path, task_number):
+        """
+        Сохраняет модель, предтренер и словарь decode в архив .zip
+        """
+        model_save_path = f"{path}_model.zip"
+        pretrainer_save_path = f"{path}_pretrainer.zip"
+        decode_save_path = f"{path}_decode.pkl"
 
-    def load_model(self, path):
-        self.model.load_model(path)
+        self.model.save_model(model_save_path)
+        self.pretrainer.save_model(pretrainer_save_path)
+        
+        with open(decode_save_path, 'wb') as f:
+            pickle.dump(self.decode, f)
+        
+        archive_path = f"{path}.zip"
+        with zipfile.ZipFile(archive_path, 'w') as archive:
+            archive.write(model_save_path, os.path.basename(model_save_path))
+            archive.write(pretrainer_save_path, os.path.basename(pretrainer_save_path))
+            archive.write(decode_save_path, os.path.basename(decode_save_path))
+
+        os.remove(model_save_path)
+        os.remove(pretrainer_save_path)
+        os.remove(decode_save_path)
+
+        print(f"Model, pretrainer, and decode dictionary saved to {archive_path}")
+
+    def load_model(self, path, task_number):
+        """
+        Загружает модель, предтренер и словарь decode из архива .zip
+        """
+        archive_path = f"{path}_task{task_number}.zip"
+        
+        with zipfile.ZipFile(archive_path, 'r') as archive:
+            archive.extractall(path=os.path.dirname(archive_path))
+        
+        model_load_path = f"{path}_model.zip"
+        pretrainer_load_path = f"{path}_pretrainer.zip"
+        decode_load_path = f"{path}_decode.pkl"
+
+        self.model.load_model(model_load_path)
+        self.pretrainer.load_model(pretrainer_load_path)
+
+        with open(decode_load_path, 'rb') as f:
+            self.decode = pickle.load(f)
+
+        os.remove(model_load_path)
+        os.remove(pretrainer_load_path)
+        os.remove(decode_load_path)
+
+        self.__pretrained = True  
+        print(f"Model, pretrainer, and decode dictionary loaded from {archive_path}")
