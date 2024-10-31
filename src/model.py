@@ -73,8 +73,8 @@ class VideoClassifier:
         pretrainer_save_path = f"{path}_pretrainer.zip"
         decode_save_path = f"{path}_decode.pkl"
 
-        self.model.save_model(model_save_path)
-        self.pretrainer.save_model(pretrainer_save_path)
+        self.model.save_model(model_save_path[:-4])
+        self.pretrainer.save_model(pretrainer_save_path[:-4])
         
         with open(decode_save_path, 'wb') as f:
             pickle.dump(self.decode, f)
@@ -100,9 +100,9 @@ class VideoClassifier:
         with zipfile.ZipFile(archive_path, 'r') as archive:
             archive.extractall(path=os.path.dirname(archive_path))
         
-        model_load_path = f"{path}_model.zip"
-        pretrainer_load_path = f"{path}_pretrainer.zip"
-        decode_load_path = f"{path}_decode.pkl"
+        model_load_path = f"{path}_task{task_number}_model.zip"
+        pretrainer_load_path = f"{path}_task{task_number}_pretrainer.zip"
+        decode_load_path = f"{path}_task{task_number}_decode.pkl"
 
         self.model.load_model(model_load_path)
         self.pretrainer.load_model(pretrainer_load_path)

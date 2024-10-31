@@ -174,3 +174,6 @@ analyzed_videos/
 # checkpoints/
 data_split/
 frames/
+
+# sup notebooks
+figures.ipynb
