@@ -1,10 +1,10 @@
 import os
 import argparse
 from glob import glob
-from src.utils.split_videos import split_videos
-from src.utils.crop_frames import process_videos
+from src.data.split_videos import split_videos
+from src.data.crop_frames import process_videos
 from src.train import train_and_evaluate
-from src.utils.clear_frames import process_project_directories
+from src.data.clear_frames import process_project_directories
 
 
 def main():

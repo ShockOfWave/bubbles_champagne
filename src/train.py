@@ -1,5 +1,6 @@
-from src.model import VideoClassifier
-from src.utils.preprocess import preprocess_data, decode
+from src.models.main_model import VideoClassifier
+from src.data.preprocess import preprocess_data
+from src.utils.config import decode
 import os
 
 def train_and_evaluate(train_paths, val_paths, test_paths, output_dir, task_number, n_d=64, n_a=64, n_steps=5, gamma=1.5, lambda_sparse=1e-4, lr=2e-2, step_size=10, gamma_lr=0.9, batch_size=128, virtual_batch_size=256, patience=30, pretrain_ratio=0.8):

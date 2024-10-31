@@ -5,10 +5,42 @@ import argparse
 from tqdm import tqdm
 
 def create_dir_if_not_exists(directory):
+    """
+    Creates a directory if it does not exist.
+
+    Parameters
+    ----------
+    directory: str
+        Path to the directory to be created.
+
+    Returns
+    -------
+    None
+    """
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-def split_videos(root_dir, output_dir, train_split=0.6, val_split=0.3, test_split=0.1):
+def split_videos(root_dir, output_dir, train_split=0.6, val_split=0.2, test_split=0.2):
+    """
+    Splits the videos in root_dir into train, val, and test sets and saves them in output_dir.
+
+    Parameters
+    ----------
+    root_dir: str
+        Path to the root directory containing the video classes.
+    output_dir: str
+        Path to the output directory where the split videos will be saved.
+    train_split: float, optional
+        Proportion of videos to use for training. Default is 0.6.
+    val_split: float, optional
+        Proportion of videos to use for validation. Default is 0.2.
+    test_split: float, optional
+        Proportion of videos to use for testing. Default is 0.2.
+
+    Returns
+    -------
+    None
+    """
     for class_name in os.listdir(root_dir):
         class_dir = os.path.join(root_dir, class_name)
 

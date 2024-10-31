@@ -164,7 +164,7 @@ cython_debug/
 root_dir/
 output_dir/
 images/
-data/
+# data/
 
 # Analyzed videos folder
 analyzed_videos/
@@ -177,3 +177,6 @@ frames/
 
 # sup notebooks
 figures.ipynb
+
+# optuna files
+optuna_models_optimization.db
