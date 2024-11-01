@@ -1,3 +1,5 @@
+import os
+import pickle
 import numpy as np
 from tqdm import tqdm
 from src.models.clip_inference import CLIPInference
@@ -26,7 +28,7 @@ def extract_labels_from_path(path, label_index):
     
     return labels[label_index]
 
-def preprocess_data(paths, task_number):
+def preprocess_data(paths, task_number, data_folder="data"):
     """
     Preprocesses data by extracting embeddings and labels from image paths.
 
@@ -54,4 +56,10 @@ def preprocess_data(paths, task_number):
         y.append(label)
     
     y = [converter[x] for x in y]
-    return np.array(X), np.array(y)
+
+    X = np.array(X)
+    y = np.array(y)
+    if not os.path.exists(data_folder):
+        os.makedirs(data_folder)
+    pickle.dump([X, y], open(os.path.join(data_folder, f"data_task{task_number}.pkl"), "wb"))
+    return X, y
