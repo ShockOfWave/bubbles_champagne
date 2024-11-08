@@ -1,3 +1,4 @@
+import torch
 from src.utils import task_types
 from src.models.main_model import VideoClassifier
 from src.models.clip_inference import CLIPInference
@@ -15,8 +16,9 @@ class MainModelInference:
     def predict(self, X):
         seg_pred = self.segmentation_inference.predict(X)
         if seg_pred.masks and hasattr(seg_pred.masks, 'xy'):
-            X = self.clip_inference.extract_embeddings(X)
-            pred = self.model.predict([X])
+            with torch.no_grad():
+                X = self.clip_inference.extract_embeddings(X)
+                pred = self.model.predict([X])
             predicted_label = self.model.decode[pred[0]]
             return predicted_label
         else:

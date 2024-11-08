@@ -5,9 +5,10 @@ from sklearn.metrics import accuracy_score
 import pickle
 import zipfile
 import os
+from catboost import CatBoostClassifier
 
 class VideoClassifier:
-    def __init__(self, n_d=64, n_a=64, n_steps=5, gamma=1.5, lambda_sparse=1e-4, lr=2e-2, step_size=10, gamma_lr=0.9, batch_size=128, virtual_batch_size=256, verbose=10, max_epochs=100):
+    def __init__(self, n_d=64, n_a=64, n_steps=5, gamma=1.5, lambda_sparse=1e-4, lr=2e-2, step_size=10, gamma_lr=0.9, batch_size=128, virtual_batch_size=256, verbose=10, max_epochs=1000):
         """
         Initializes the VideoClassifier with specified hyperparameters for the TabNet model and pretrainer.
 
@@ -40,8 +41,9 @@ class VideoClassifier:
             lambda_sparse=lambda_sparse,
             optimizer_fn=torch.optim.Adam,
             optimizer_params=dict(lr=lr),
-            scheduler_params={"base_lr": 1e-5, "max_lr": 1e-1},
-            scheduler_fn=torch.optim.lr_scheduler.CyclicLR,
+            scheduler_params={"step_size":10, # how to use learning rate scheduler
+                                "gamma":0.9},
+            scheduler_fn=torch.optim.lr_scheduler.StepLR,
             verbose=verbose
         )
         self.pretrainer = TabNetPretrainer(
@@ -67,6 +69,7 @@ class VideoClassifier:
 
         This function sets the model's pretrained status to True upon completion.
         """
+        print(X_train.shape)
         self.pretrainer.fit(
             X_train=X_train,
             eval_set=[X_val],
@@ -97,7 +100,7 @@ class VideoClassifier:
         self.model.fit(
             X_train, y_train,
             eval_set=[(X_val, y_val)],
-            eval_metric=["accuracy", "balanced_accuracy"],
+            eval_metric=["balanced_accuracy", "accuracy"],
             patience=patience,
             from_unsupervised=self.pretrainer,  # Используем предобученную модель
             batch_size=self.batch_size,
@@ -109,7 +112,8 @@ class VideoClassifier:
         return self.model.predict(X_test)
 
     def evaluate(self, X_test, y_test):
-        y_pred = self.predict(X_test)
+        with torch.no_grad():
+            y_pred = self.predict(X_test)
         acc = accuracy_score(y_test, y_pred)
         print(f"Test Accuracy: {acc:.4f}")
         return acc
