@@ -39,7 +39,8 @@ def plot_and_save_all_metrics(y_true, y_pred, output_dir, task_number, decode_la
     plt.xlabel("Recall")
     plt.ylabel("Precision")
     plt.title("Precision-Recall Curve")
-    plt.legend(loc="upper right")
+    plt.legend(loc="lower left")  # Легенда теперь в левом нижнем углу
+
 
     # Сохраняем изображение
     plt.tight_layout()

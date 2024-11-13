@@ -6,6 +6,7 @@ import pickle
 import zipfile
 import os
 from catboost import CatBoostClassifier
+from src.utils.metrics import cross_entropy_reporting
 
 class VideoClassifier:
     def __init__(self, n_d=64, n_a=64, n_steps=5, gamma=1.5, lambda_sparse=1e-4, lr=2e-2, step_size=10, gamma_lr=0.9, batch_size=128, virtual_batch_size=256, verbose=10, max_epochs=1000):
@@ -98,8 +99,9 @@ class VideoClassifier:
             
         self.model.fit(
             X_train, y_train,
-            eval_set=[(X_val, y_val)],
-            eval_metric=["balanced_accuracy", "accuracy"],
+            eval_set=[(X_train, y_train), (X_val, y_val)],
+            eval_name=['train', 'val'],
+            eval_metric=[cross_entropy_reporting, "balanced_accuracy", "accuracy"],
             patience=patience,
             from_unsupervised=self.pretrainer,  # Используем предобученную модель
             batch_size=self.batch_size,

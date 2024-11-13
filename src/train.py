@@ -88,5 +88,7 @@ def train_and_evaluate(train_paths, val_paths, test_paths, output_dir, task_numb
     # Сохранение модели, предтренера и словаря decode
     model_path = os.path.join(output_dir, f"trained_model_task{task_number}")
     model.save_model(model_path)
+    train_loss = model.model.history["train_cross_entropy"]
+    val_loss = model.model.history["val_cross_entropy"]
     
     return accuracy
