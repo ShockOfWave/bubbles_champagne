@@ -57,7 +57,7 @@ def extract_labels_from_path(path, label_index):
     
     return labels[label_index]
 
-def preprocess_data(paths, task_number, data_folder="data"):
+def preprocess_data(paths, task_number, data_folder="data", process_labels=True, save_data=False):
     """
     Preprocesses data by extracting embeddings and labels from image paths.
 
@@ -92,11 +92,13 @@ def preprocess_data(paths, task_number, data_folder="data"):
             X.append(embeddings)
             
             # Извлечение метки
-            label = extract_labels_from_path(path, label_index)
-            y.append(label)
+            if process_labels:
+                label = extract_labels_from_path(path, label_index)
+                y.append(label)
 
     # Преобразуем метки в числовой формат
-    y = [converter[x] for x in y]
+    if process_labels:
+        y = [converter[x] for x in y]
 
     X = np.array(X)
     y = np.array(y)
@@ -106,8 +108,11 @@ def preprocess_data(paths, task_number, data_folder="data"):
     #     X, y = shuffle(X, y, random_state=42)
 
     # Сохраняем данные
-    if not os.path.exists(data_folder):
-        os.makedirs(data_folder)
-    pickle.dump([X, y], open(os.path.join(data_folder, f"data_task{task_number}.pkl"), "wb"))
-    
-    return X, y
+    if save_data:
+        if not os.path.exists(data_folder):
+            os.makedirs(data_folder)
+        pickle.dump([X, y], open(os.path.join(data_folder, f"data_task{task_number}.pkl"), "wb"))
+    if process_labels:
+        return X, y
+    else:
+        return X
