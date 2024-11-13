@@ -2,7 +2,7 @@ import cv2
 import torch
 import numpy as np
 from pathlib import Path
-from transformers import CLIPProcessor, CLIPModel
+from transformers import AutoProcessor, AutoModel
 
 
 class CLIPInference:
@@ -13,8 +13,8 @@ class CLIPInference:
         This method sets up the CLIP model and processor.
         """
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.model = CLIPModel.from_pretrained("openai/clip-vit-large-patch14").to(self.device)
-        self.processor = CLIPProcessor.from_pretrained("openai/clip-vit-large-patch14")
+        self.model = AutoModel.from_pretrained("google/siglip-so400m-patch14-384").to(self.device)
+        self.processor = AutoProcessor.from_pretrained("google/siglip-so400m-patch14-384")
 
     def extract_embeddings(self, img: str | np.ndarray):
         """
