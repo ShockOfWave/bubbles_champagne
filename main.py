@@ -118,8 +118,8 @@ def main():
     # # Обучение для задачи 3 (time)
     # print("Training model for task (time)...")
     # train_and_evaluate(train_paths, val_paths, test_paths, output_dir=args.checkpoints, task_number=3,
-    #                    n_d=64, n_a=64, n_steps=3, gamma=1.5, lambda_sparse=1e-4, lr=2e-2, 
-    #                    step_size=20, gamma_lr=0.95, batch_size=128, virtual_batch_size=256, patience=100, pretrain_ratio=0.8)
+    #                    n_d=64, n_a=10, n_steps=5, gamma=0.9, lambda_sparse=1e-3, lr=2e-2, 
+    #                    step_size=10, gamma_lr=0.9, batch_size=1024, virtual_batch_size=256, patience=30, pretrain_ratio=0.3)
 
 if __name__ == "__main__":
     main()
