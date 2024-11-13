@@ -69,7 +69,6 @@ class VideoClassifier:
 
         This function sets the model's pretrained status to True upon completion.
         """
-        print(X_train.shape)
         self.pretrainer.fit(
             X_train=X_train,
             eval_set=[X_val],
@@ -174,8 +173,9 @@ class VideoClassifier:
         model_load_path = os.path.join(path, f"trained_model_task{task_number}_model.zip")
         pretrainer_load_path = os.path.join(path, f"trained_model_task{task_number}_pretrainer.zip")
         decode_load_path = os.path.join(path, f"trained_model_task{task_number}_decode.pkl")
-
-        self.model.load_model(model_load_path)
+        model = TabNetClassifier()
+        model.load_model(model_load_path) 
+        self.model = model
         self.pretrainer.load_model(pretrainer_load_path)
 
         with open(decode_load_path, 'rb') as f:
