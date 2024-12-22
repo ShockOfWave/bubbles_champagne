@@ -56,7 +56,7 @@ def split_videos(root_dir, output_dir, train_split=0.7, val_split=0.2, test_spli
             )
             # Затем делим temp на val и test
             val_videos, test_videos = train_test_split(
-                temp_videos, test_size=(test_split / (test_split + val_split)), random_state=42
+                temp_videos, test_size=(test_split / (test_split + val_split)), random_state=32
             )
 
             for split, video_list in zip(['train', 'val', 'test'], [train_videos, val_videos, test_videos]):

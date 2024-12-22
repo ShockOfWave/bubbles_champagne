@@ -4,7 +4,8 @@ from glob import glob
 from src.data.split_videos import split_videos
 from src.data.crop_frames import process_videos
 from src.train import train_and_evaluate
-from src.data.clear_frames import process_project_directories
+from src.data.video_segmentation import VideoSegmenter
+from tqdm import tqdm
 
 import torch
 import numpy as np
@@ -19,17 +20,42 @@ def set_seed(seed: int):
     torch.backends.cudnn.deterministic = True  # Для детерминированности
     torch.backends.cudnn.benchmark = False     # Отключить оптимизации, которые делают процесс случайным
 
+def process_videos_with_segmentation(input_dir, output_dir):
+    """Process videos with segmentation model and save results"""
+    os.makedirs(output_dir, exist_ok=True)
+    segmenter = VideoSegmenter()
+    
+    # Get all video files
+    video_files = glob(os.path.join(input_dir, "**", "*.mp4"), recursive=True)
+    
+    # Process each video with progress bar for directories
+    for video_file in tqdm(video_files, desc="Processing directories", unit="video"):
+        relative_path = os.path.relpath(video_file, input_dir)
+        # Add _analyzed suffix before the extension
+        base, ext = os.path.splitext(relative_path)
+        output_path = os.path.join(output_dir, f"{base}_analyzed{ext}")
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        
+        segmenter.process_video(video_file, output_path)
+
 def main():
     set_seed(42)
     parser = argparse.ArgumentParser(description="Video classification training")
     
     parser.add_argument('--root_dir', type=str, required=True, help="Path to the train data directory")
     parser.add_argument('--checkpoints', type=str, required=True, help="Directory to save the model and results")
-    parser.add_argument('--skip_clearing', type=bool, required=False, help="Skip empty frames clearing stage.", default=False)
+
     args = parser.parse_args()
 
+    # Process videos with segmentation and save to analyzed_videos directory
+    analyzed_dir = "analyzed_videos"
+    if not os.path.exists(analyzed_dir):
+        process_videos_with_segmentation(args.root_dir, analyzed_dir)
+    else:
+        print("Videos already analyzed")
+
     if not os.path.exists("data_split/"):
-        split_videos(root_dir=args.root_dir, output_dir="data_split")
+        split_videos(root_dir=analyzed_dir, output_dir="data_split")
     else:
         print("Data split already exists. Skipping data split...")
 
@@ -37,13 +63,6 @@ def main():
         process_videos(root_dir="data_split", output_dir="frames", fps=10)
     else:
         print("Frames already extracted. Skipping frame extraction...")
-    
-    if not args.skip_clearing:
-        print('Clearing frames...')
-        process_project_directories(project_root='frames')
-        print('Frames cleared.')
-    else:
-        print("Skip clearing flag is True. Skipping empty frames clearing.")
 
 
     if os.path.exists('data/train/data_task1.pkl'):
