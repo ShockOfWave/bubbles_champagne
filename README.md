@@ -1,89 +1,104 @@
 # Video Classification with TabNet and CLIP
 
-Overview
+## Overview
 
-Этот проект реализует систему классификации видео с использованием модели TabNet и модели для извлечения эмбеддингов CLIP. Видео конвертируются в изображения, из которых извлекаются эмбеддинги с помощью CLIP, после чего классификация осуществляется с помощью TabNet.
+This project implements a video classification system using TabNet model and CLIP embeddings. Videos are converted to frames, from which embeddings are extracted using CLIP, followed by classification using TabNet. The system also includes YOLO-based video segmentation for preprocessing.
 
-Features
+## Features
 
-	•	Извлечение эмбеддингов из изображений с использованием модели CLIP.
-	•	Предобучение и обучение модели TabNet.
-	•	Поддержка обучения по любому выбранному лейблу, который извлекается из структуры директорий.
-	•	Поддержка сохранения и загрузки LabelEncoder для преобразования строковых лейблов в числовые.
-	•	Возможность предобучения модели с дальнейшим обучением для более точной классификации.
+- Video segmentation using YOLO model for object detection
+- Frame extraction from videos with automatic processing
+- CLIP embeddings extraction from images
+- TabNet model pretraining and training
+- Support for training on any label extracted from directory structure
+- LabelEncoder support for converting string labels to numeric values
+- Model pretraining capability for improved classification accuracy
 
-Project Structure
+## Project Structure
 ```
 project_root/
 ├── src/
-│   ├── __init__.py                # Инициализация пакета
-│   ├── model.py                   # Класс для модели TabNet и методов инференса
-│   ├── preprocess.py              # Функции для предобработки изображений и извлечения эмбеддингов
-│   ├── train_model.py             # Основная логика обучения модели
+│   ├── __init__.py                # Package initialization
+│   ├── train.py                   # Main training logic
+│   ├── data/
+│   │   ├── __init__.py           # Data processing initialization
+│   │   ├── preprocess.py         # Image preprocessing and embedding extraction
+│   │   ├── video_segmentation.py # YOLO-based video segmentation
+│   │   ├── crop_frames.py        # Video frame extraction
+│   │   └── split_videos.py       # Data splitting into train/val/test
+│   ├── models/
+│   │   ├── __init__.py           # Models initialization
+│   │   ├── main_model.py         # TabNet model and inference methods
+│   │   └── clip_inference.py     # CLIP model for embeddings
 │   └── utils/
-│       ├── __init__.py            # Инициализация для утилит
-│       ├── preprocess.py          # Препроцессинг данных
-│       ├── crop_frames.py         # Нарезка видео на кадры
-│       └── split_videos.py        # Разбить папку с данными на train/val/test
+│       ├── __init__.py           # Utilities initialization
+│       ├── metrics.py            # Evaluation metrics
+│       └── paths.py              # Path handling utilities
 ├── examples/
-│   └── inference.ipynb            # Пример использования модели для инференса
-├── main.py                        # Точка входа для обучения модели
-├── requirements.txt               # Зависимости проекта
-└── README.md                      # Этот файл
+│   └── inference.ipynb           # Model inference example
+├── main.py                       # Entry point for training
+├── requirements.txt              # Project dependencies
+└── README.md                     # This file
 ```
 
 ## Installation
 
-1. Клонирование репозитория
+1. Clone the repository
 
-```
+```bash
 git clone https://github.com/ShockOfWave/bubbles_champagne.git
 cd bubbles_champagne
 ```
 
-2. Установка зависимостей
+2. Install dependencies
 
-Перед тем, как начать, убедитесь, что у вас установлены все необходимые зависимости. Для этого выполните:
+Before starting, make sure you have all the necessary dependencies installed:
 
-```
+```bash
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-3. Проверка установки
+3. Verify installation
 
-Убедитесь, что все зависимости установлены корректно, и проект готов к использованию. В этом проекте используется Python версии 3.8 или выше.
+Ensure all dependencies are installed correctly and the project is ready to use. This project requires Python 3.8 or higher.
 
 ## Usage
 
-1. Запуск обучения
+1. Running the training
 
-Запустите скрипт main.py для обучения модели. Убедитесь, что вы передали корректные пути к данным и директорию для сохранения модели:
+Run main.py to train the model. Make sure to provide correct paths to data and model saving directory:
 
-```
+```bash
 python main.py --root_dir /path/to/data \
-               --checkpoints /path/to/checkpoints с
+               --checkpoints /path/to/checkpoints
 ```
 
-Параметры:
+Parameters:
+- `--root_dir`: Path to the data directory
+- `--checkpoints`: Path for saving model checkpoints
 
-	•	--root_dir: Путь к данным.
-	•	--checkpoints: Путь для сохранения модели.
-
-Пояснение к задачам:
+Task Description:
 ```
- - Task #1: Бинарная классификация типа шампанского (розовое/белое)
- - Task #2: Бинарная классификация тары (пластик/стекло)
- - Task #3: Классификация времени (от наливания шампанского в тару до снятия измерений)
- ```
+- Task #1: Binary classification of champagne type (pink/white)
+- Task #2: Binary classification of container type (plastic/glass)
+```
 
+2. Video Processing Pipeline
 
-3. Инференс
+The system follows these steps:
+1. Videos are processed with YOLO segmentation model
+2. Processed videos are saved to 'analyzed_videos' directory
+3. Videos are split into train/val/test sets
+4. Frames are extracted from videos
+5. CLIP embeddings are extracted from frames
+6. TabNet model is trained on the embeddings
 
-Для инференса данных используйте [examples/inference.ipynb](https://github.com/ShockOfWave/bubbles_champagne/blob/main/examples/inference.ipynb), чтобы загрузить сохраненную модель и провести классификацию на новых изображениях.
+3. Inference
 
+For inference on new data, use [examples/inference.ipynb](https://github.com/ShockOfWave/bubbles_champagne/blob/main/examples/inference.ipynb) to load the saved model and perform classification on new images.
 
-License
+## License
 
-Этот проект лицензирован под MIT License.
+This project is licensed under the MIT License.

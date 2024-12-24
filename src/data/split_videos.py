@@ -7,14 +7,14 @@ from sklearn.model_selection import train_test_split
 
 def create_dir_if_not_exists(directory):
     """
-    Создает директорию, если она не существует.
+    Creates a directory if it does not exist.
 
-    Параметры
+    Parameters
     ----------
     directory: str
-        Путь к директории для создания.
+        Path to the directory to create.
 
-    Возвращает
+    Returns
     -------
     None
     """
@@ -23,22 +23,22 @@ def create_dir_if_not_exists(directory):
 
 def split_videos(root_dir, output_dir, train_split=0.7, val_split=0.2, test_split=0.1):
     """
-    Разбивает видео в root_dir на train, val и test наборы и сохраняет их в output_dir.
+    Splits videos in root_dir into train, val and test sets and saves them in output_dir.
 
-    Параметры
+    Parameters
     ----------
     root_dir: str
-        Путь к корневой директории, содержащей классы видео.
+        Path to the root directory containing video classes.
     output_dir: str
-        Путь к выходной директории, где будут сохранены разделенные видео.
+        Path to the output directory where the split videos will be saved.
     train_split: float, optional
-        Доля видео для обучения. По умолчанию 0.6.
+        Proportion of videos for training. Default is 0.6.
     val_split: float, optional
-        Доля видео для валидации. По умолчанию 0.2.
+        Proportion of videos for validation. Default is 0.2.
     test_split: float, optional
-        Доля видео для тестирования. По умолчанию 0.2.
+        Proportion of videos for testing. Default is 0.2.
 
-    Возвращает
+    Returns
     -------
     None
     """
@@ -47,14 +47,14 @@ def split_videos(root_dir, output_dir, train_split=0.7, val_split=0.2, test_spli
 
         if os.path.isdir(class_dir):
             videos = [f for f in os.listdir(class_dir) if f.endswith('.mp4')]
-            # Размешиваем видео случайным образом
+            # Shuffle videos randomly
             random.shuffle(videos)
 
-            # Сначала делим на train и temp
+            # First split into train and temp
             train_videos, temp_videos = train_test_split(
                 videos, test_size=(1 - train_split), random_state=42
             )
-            # Затем делим temp на val и test
+            # Then split temp into val and test
             val_videos, test_videos = train_test_split(
                 temp_videos, test_size=(test_split / (test_split + val_split)), random_state=32
             )
@@ -69,12 +69,12 @@ def split_videos(root_dir, output_dir, train_split=0.7, val_split=0.2, test_spli
                     shutil.copy(src_video_path, dst_video_path)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Разделите видео на train, val и test наборы.")
-    parser.add_argument('--root_dir', type=str, required=True, help="Путь к корневой директории, содержащей классы видео.")
-    parser.add_argument('--output_dir', type=str, default='output', help="Путь к директории, где будут сохранены разделенные видео.")
-    parser.add_argument('--train_split', type=float, default=0.6, help="Доля видео для обучения.")
-    parser.add_argument('--val_split', type=float, default=0.3, help="Доля видео для валидации.")
-    parser.add_argument('--test_split', type=float, default=0.1, help="Доля видео для тестирования.")
+    parser = argparse.ArgumentParser(description="Split videos into train, val and test sets.")
+    parser.add_argument('--root_dir', type=str, required=True, help="Path to the root directory containing video classes.")
+    parser.add_argument('--output_dir', type=str, default='output', help="Path to the directory where the split videos will be saved.")
+    parser.add_argument('--train_split', type=float, default=0.6, help="Proportion of videos for training.")
+    parser.add_argument('--val_split', type=float, default=0.3, help="Proportion of videos for validation.")
+    parser.add_argument('--test_split', type=float, default=0.1, help="Proportion of videos for testing.")
     
     args = parser.parse_args()
 

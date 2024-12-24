@@ -10,7 +10,7 @@ from src.data.plots import plot_and_save_all_metrics
 
 def train_and_evaluate(train_paths, val_paths, test_paths, output_dir, task_number, n_d=64, n_a=64, n_steps=5, gamma=1.5, lambda_sparse=1e-4, lr=2e-2, step_size=10, gamma_lr=0.9, batch_size=128, virtual_batch_size=256, patience=30, pretrain_ratio=0.8):
     """
-    Функция для обучения модели и оценки на тестовых данных.
+    Function for training the model and evaluating on test data.
     """
     if isinstance(train_paths, list):
         print("Preprocessing training data...")
@@ -40,11 +40,11 @@ def train_and_evaluate(train_paths, val_paths, test_paths, output_dir, task_numb
         raise ValueError("Invalid input type. Expected 'str' or 'list'")
     
 
-    # Создаем директорию для сохранения модели, если она не существует
+    # Create directory for saving model if it doesn't exist
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    # Создаем экземпляр модели
+    # Create model instance
     model = VideoClassifier(
         n_d=n_d, 
         n_a=n_a, 
@@ -59,33 +59,33 @@ def train_and_evaluate(train_paths, val_paths, test_paths, output_dir, task_numb
         max_epochs=1000
     )
 
-    # Устанавливаем словарь decode для задачи
+    # Set decode dictionary for the task
     decode_labels = decode[task_number - 1]
     model.decode = decode_labels
 
-    # Этап предобучения
+    # Pretraining stage
     print("Starting pretraining...")
     model.pretrain(X_train, X_val, pretrain_ratio=pretrain_ratio)
 
-    # Основное обучение
+    # Main training
     print("Starting training...")
     model.train(X_train, y_train, X_val, y_val, patience=patience)
 
-    # Оценка на тестовых данных
+    # Evaluate on test data
     print("Evaluating on test data...")
     y_pred_indices = model.predict(X_test)
 
-    # Преобразование предсказанных меток с использованием decode
+    # Transform predicted labels using decode
     y_pred = [decode_labels[pred] for pred in y_pred_indices]
-    y_true = [decode_labels[true] for true in y_test]  # преобразуем и y_test для соответствия с метками
+    y_true = [decode_labels[true] for true in y_test]  # transform y_test to match labels
 
-    # Оценка точности с преобразованными метками
+    # Evaluate accuracy with transformed labels
     accuracy = accuracy_score(y_true, y_pred)
     print(f"Accuracy score on test data: {accuracy:.4f}")
-    # Сохранение метрик и графиков
+    # Save metrics and plots
     plot_and_save_all_metrics(y_true, y_pred, output_dir, task_number, list(decode_labels.values()))
 
-    # Сохранение модели, предтренера и словаря decode
+    # Save model, pretrainer and decode dictionary
     model_path = os.path.join(output_dir, f"trained_model_task{task_number}")
     model.save_model(model_path)
     train_loss = model.model.history["train_cross_entropy"]

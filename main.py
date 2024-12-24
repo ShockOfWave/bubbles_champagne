@@ -12,13 +12,13 @@ import numpy as np
 import random
 
 def set_seed(seed: int):
-    random.seed(seed)                      # Для модуля random
-    np.random.seed(seed)                   # Для numpy
-    torch.manual_seed(seed)                # Для CPU в PyTorch
-    torch.cuda.manual_seed(seed)           # Для GPU в PyTorch
-    torch.cuda.manual_seed_all(seed)       # Для всех GPU (если используется несколько)
-    torch.backends.cudnn.deterministic = True  # Для детерминированности
-    torch.backends.cudnn.benchmark = False     # Отключить оптимизации, которые делают процесс случайным
+    random.seed(seed)                      # For random module
+    np.random.seed(seed)                   # For numpy
+    torch.manual_seed(seed)                # For PyTorch CPU
+    torch.cuda.manual_seed(seed)           # For PyTorch GPU
+    torch.cuda.manual_seed_all(seed)       # For all GPUs (if multiple are used)
+    torch.backends.cudnn.deterministic = True  # For deterministic behavior
+    torch.backends.cudnn.benchmark = False     # Disable optimizations that make the process random
 
 def process_videos_with_segmentation(input_dir, output_dir):
     """Process videos with segmentation model and save results"""
@@ -115,30 +115,6 @@ def main():
                        n_d=64, n_a=10, n_steps=5, gamma=0.9, lambda_sparse=1e-3, lr=2e-2, 
                        step_size=10, gamma_lr=0.9, batch_size=1024, virtual_batch_size=256, patience=30, pretrain_ratio=0.3)
 
-
-    # if os.path.exists('data/train/data_task3.pkl'):
-    #     print("Using preprocessed train data")
-    #     train_paths = "data/train/data_task3.pkl"
-    # else:
-    #     train_paths = glob("frames/train/*/*.jpg")
-    
-    # if os.path.exists('data/val/data_task3.pkl'):
-    #     print("Using preprocessed val data")
-    #     val_paths = "data/val/data_task3.pkl"
-    # else:
-    #     val_paths = glob("frames/val/*/*.jpg")
-
-
-    # if os.path.exists('data/test/data_task3.pkl'):
-    #     print("Using preprocessed test data")
-    #     test_paths = "data/test/data_task3.pkl"
-    # else:
-    #     test_paths = glob("frames/test/*/*.jpg")
-    # # Обучение для задачи 3 (time)
-    # print("Training model for task (time)...")
-    # train_and_evaluate(train_paths, val_paths, test_paths, output_dir=args.checkpoints, task_number=3,
-    #                    n_d=64, n_a=10, n_steps=5, gamma=0.9, lambda_sparse=1e-3, lr=2e-2, 
-    #                    step_size=10, gamma_lr=0.9, batch_size=1024, virtual_batch_size=256, patience=30, pretrain_ratio=0.3)
 
 if __name__ == "__main__":
     main()

@@ -103,7 +103,7 @@ class VideoClassifier:
             eval_name=['train', 'val'],
             eval_metric=[cross_entropy_reporting, "balanced_accuracy", "accuracy"],
             patience=patience,
-            from_unsupervised=self.pretrainer,  # Используем предобученную модель
+            from_unsupervised=self.pretrainer,  # Use pretrained model
             batch_size=self.batch_size,
             virtual_batch_size=self.virtual_batch_size,
             max_epochs=self.max_epochs
