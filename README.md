@@ -1,5 +1,14 @@
 # Video Classification with TabNet and CLIP
 
+![GitHub](https://img.shields.io/github/license/ShockOfWave/bubbles_champagne)
+![GitHub last commit](https://img.shields.io/github/last-commit/ShockOfWave/bubbles_champagne)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/ShockOfWave/bubbles_champagne)
+![contributors](https://img.shields.io/github/contributors/ShockOfWave/bubbles_champagne) 
+![codesize](https://img.shields.io/github/languages/code-size/ShockOfWave/bubbles_champagne)
+![GitHub repo size](https://img.shields.io/github/repo-size/ShockOfWave/bubbles_champagne)
+![GitHub top language](https://img.shields.io/github/languages/top/ShockOfWave/bubbles_champagne)
+![GitHub language count](https://img.shields.io/github/languages/count/ShockOfWave/bubbles_champagne)
+
 ## Overview
 
 This project implements a video classification system using TabNet model and CLIP embeddings. Videos are converted to frames, from which embeddings are extracted using CLIP, followed by classification using TabNet. The system also includes YOLO-based video segmentation for preprocessing.
