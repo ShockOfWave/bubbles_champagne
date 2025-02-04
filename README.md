@@ -14,6 +14,10 @@ This project implements a video classification system using TabNet model and CLI
 - LabelEncoder support for converting string labels to numeric values
 - Model pretraining capability for improved classification accuracy
 
+## Data
+
+You can download the raw dataset from [here](https://storage.yandexcloud.net/bubbles-champagne/raw_data.7z)
+
 ## Project Structure
 ```
 project_root/
